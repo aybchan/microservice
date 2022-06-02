@@ -1,31 +1,27 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/aybchan/microservice/handlers"
 )
 
 func main() {
-	http.HandleFunc("/hello", func(rw http.ResponseWriter, r *http.Request) {
-		log.Println("hello world")
+	// create handler
+	l := log.New(os.Stdout, "api", log.LstdFlags)
+	helloHandler := handlers.NewHello(l)
 
-		d, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(rw, "something went wrong", http.StatusBadRequest)
-			return
-		}
+	// register handler to servemux
+	sm := http.NewServeMux()
+	sm.Handle("/", helloHandler)
 
-		fmt.Fprintf(rw, "hello %s", d)
-	})
+	//http.HandleFunc("/bye", func(rw http.ResponseWriter, r *http.Request) {
+	//	log.Println("good bye")
 
-	http.HandleFunc("/bye", func(rw http.ResponseWriter, r *http.Request) {
-		log.Println("good bye")
+	//	os.Exit(3)
+	//})
 
-		os.Exit(3)
-	})
-
-	http.ListenAndServe(":9090", nil)
+	http.ListenAndServe(":9090", sm)
 }
