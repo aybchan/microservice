@@ -13,10 +13,12 @@ func main() {
 
 		d, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			rw.WriteHeader(http.StatusBadRequest)
+			http.Error(rw, "something went wrong", http.StatusBadRequest)
+			return
 		}
 
 		fmt.Fprintf(rw, "hello %s", d)
 	})
+
 	http.ListenAndServe(":9090", nil)
 }
