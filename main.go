@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/aybchan/microservice/handlers"
 )
@@ -19,5 +20,14 @@ func main() {
 	sm.Handle("/hello", helloHandler)
 	sm.Handle("/bye", byeHandler)
 
-	http.ListenAndServe(":9090", sm)
+	// manually create http server
+	s := &http.Server{
+		Addr:         ":9090",
+		Handler:      sm,
+		IdleTimeout:  500 * time.Millisecond,
+		ReadTimeout:  10 * time.Millisecond,
+		WriteTimeout: 10 * time.Millisecond,
+	}
+
+	s.ListenAndServe()
 }
