@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -18,6 +19,12 @@ func main() {
 		}
 
 		fmt.Fprintf(rw, "hello %s", d)
+	})
+
+	http.HandleFunc("/bye", func(rw http.ResponseWriter, r *http.Request) {
+		log.Println("good bye")
+
+		os.Exit(3)
 	})
 
 	http.ListenAndServe(":9090", nil)
