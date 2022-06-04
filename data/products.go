@@ -3,13 +3,13 @@ package data
 import "time"
 
 type Product struct {
-	ID          int32
-	Name        string
-	Description string
-	Price       float32
-	SKU         string
-	CreatedAt   string
-	UpdatedAt   string
+	ID          int32   `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float32 `json:"price"`
+	SKU         string  `json:"sku"`
+	CreatedAt   string  `json:"-"`
+	UpdatedAt   string  `json:"-"`
 }
 
 func GetProducts() []*Product {
