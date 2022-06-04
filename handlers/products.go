@@ -16,13 +16,22 @@ func NewProducts(l *log.Logger) *Products {
 }
 
 func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	productList := data.GetProducts()
-	err := productList.ToJSON(rw)
+	// handle REST verbs
+	if r.Method == http.MethodGet {
+		p.getProducts(rw, r)
+		return
+	}
 
-	// using encoder over marshal avoids placement in memory
-	//j, err := json.Marshal(productList)
+	// handle unimplemented verbs
+	rw.WriteHeader(http.StatusMethodNotAllowed)
+
+}
+
+func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
+	productList := data.GetProducts()
+
+	err := productList.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "Encoding failed", http.StatusInternalServerError)
 	}
-	//rw.Write(j)
 }
