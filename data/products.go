@@ -3,32 +3,32 @@ package data
 import "time"
 
 type Product struct {
-	ID      string
-	Name    string
+	ID          int32
+	Name        string
 	Description string
-	Price float32
-	SKU string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Price       float32
+	SKU         string
+	CreatedAt   string
+	UpdatedAt   string
 }
 
 var ProductList = []*Product{
-	&Product{
-		ID: 0,
-		Name: "Espresso",
+	{
+		ID:          0,
+		Name:        "Espresso",
 		Description: "Short coffee",
-		Price: "1.00",
-		SKU: "coffee00",
-		CreatedAt: time.Now().UTC().String(),
-		UpdatedAt: time.Now().UTC().String(),
+		Price:       1.00,
+		SKU:         "coffee00",
+		CreatedAt:   time.Now().UTC().String(),
+		UpdatedAt:   time.Now().UTC().String(),
 	},
-	&Product{
-		ID: 1,
-		Name: "Latte",
+	{
+		ID:          1,
+		Name:        "Latte",
 		Description: "Foamy milk and espresso",
-		Price: "2.45",
-		SKU: "coffee01",
-		CreatedAt: time.Now().UTC().String(),
-		UpdatedAt: time.Now().UTC().String(),
-	}
+		Price:       2.45,
+		SKU:         "coffee01",
+		CreatedAt:   time.Now().UTC().String(),
+		UpdatedAt:   time.Now().UTC().String(),
+	},
 }
