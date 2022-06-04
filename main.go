@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	// create handlers
+	// create handlers, logger for dependency injection
 	l := log.New(os.Stdout, "api", log.LstdFlags)
 	helloHandler := handlers.NewHello(l)
 	byeHandler := handlers.NewBye(l)
