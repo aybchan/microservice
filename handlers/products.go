@@ -22,16 +22,26 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Method == http.MethodPost {
+		p.addProduct(rw, r)
+		return
+	}
+
 	// handle unimplemented verbs
 	rw.WriteHeader(http.StatusMethodNotAllowed)
 
 }
 
 func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handling GET product")
 	productList := data.GetProducts()
 
 	err := productList.ToJSON(rw)
 	if err != nil {
 		http.Error(rw, "Encoding failed", http.StatusInternalServerError)
 	}
+}
+
+func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handling POST product")
 }
