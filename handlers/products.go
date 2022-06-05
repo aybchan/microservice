@@ -44,4 +44,12 @@ func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
 
 func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handling POST product")
+
+	product := &data.Product{}
+	p.l.Println(r.Body)
+	err := product.FromJSON(r.Body)
+	if err != nil {
+		http.Error(rw, "Decoding failed", http.StatusBadRequest)
+	}
+	p.l.Printf("Product: %#v\n", product)
 }

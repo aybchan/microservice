@@ -23,6 +23,11 @@ func (ps Products) ToJSON(w io.Writer) error {
 	return encoder.Encode(ps)
 }
 
+func (p *Product) FromJSON(r io.Reader) error {
+	decoder := json.NewDecoder(r)
+	return decoder.Decode(p)
+}
+
 func GetProducts() Products {
 	return productList
 }
