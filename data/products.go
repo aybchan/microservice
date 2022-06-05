@@ -28,6 +28,15 @@ func (p *Product) FromJSON(r io.Reader) error {
 	return decoder.Decode(p)
 }
 
+func AddProduct(p *Product) {
+	p.ID = getNextID()
+	productList = append(productList, p)
+}
+
+func getNextID() int32 {
+	return productList[len(productList)-1].ID + 1
+}
+
 func GetProducts() Products {
 	return productList
 }

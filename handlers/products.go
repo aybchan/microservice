@@ -51,5 +51,6 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Decoding failed", http.StatusBadRequest)
 	}
-	p.l.Printf("Product: %#v\n", product)
+	//	p.l.Printf("Product: %#v\n", product)
+	data.AddProduct(product)
 }
