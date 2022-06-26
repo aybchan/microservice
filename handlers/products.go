@@ -31,6 +31,7 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodPut {
 		p.putProduct(rw, r)
+        return
 	}
 
 	// handle unimplemented verbs
@@ -63,8 +64,15 @@ func (p *Products) putProduct(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	p.l.Println(path, id)
-	//p.addProduct(rw, r)
-	p.updateProduct(id, rw, r)
+    err = p.updateProduct(id, rw, r)
+    if err == data.ProductNotFound {
+        http.Error(rw, "Product not found", http.StatusBadRequest)
+        return
+    }
+    if err != nil {
+        http.Error(rw, "Could not return", http.StatusInternalServerError)
+
+    }
 	return
 }
 
@@ -82,7 +90,6 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handling POST product")
 
 	product := &data.Product{}
-	p.l.Println(r.Body)
 	err := product.FromJSON(r.Body)
 	if err != nil {
 		http.Error(rw, "Decoding failed", http.StatusBadRequest)
@@ -90,17 +97,19 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 	data.AddProduct(product)
 }
 
-func (p *Products) updateProduct(id int, rw http.ResponseWriter, r *http.Request) {
+func (p *Products) updateProduct(id int, rw http.ResponseWriter, r *http.Request) error {
 	product := &data.Product{}
 	err := product.FromJSON(r.Body)
 	if err != nil {
 		http.Error(rw, "Decoding failed", http.StatusBadRequest)
+        return err
 	}
 
 	err = data.UpdateProduct(id, product)
 	if err != nil {
 		http.Error(rw, "Product not found with given ID", http.StatusBadRequest)
+        return err
 	}
 
-	return
+    return nil
 }
