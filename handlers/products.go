@@ -3,9 +3,9 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 
+    "github.com/gorilla/mux"
 	"github.com/aybchan/microservice/data"
 )
 
@@ -17,66 +17,24 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
-func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	// handle REST verbs
-	if r.Method == http.MethodGet {
-		p.getProducts(rw, r)
-		return
-	}
+func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
+    vars := mux.Vars(r)
+    id := vars["id"]
 
-	if r.Method == http.MethodPost {
-		p.addProduct(rw, r)
-		return
-	}
+	p.l.Println("Handling product PUT, updating product ID", id)
 
-	if r.Method == http.MethodPut {
-		p.putProduct(rw, r)
-        return
-	}
+	idint, err := strconv.Atoi(id)
 
-	// handle unimplemented verbs
-	rw.WriteHeader(http.StatusMethodNotAllowed)
-
-}
-
-func (p *Products) putProduct(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handling product PUT")
-	path := r.URL.Path
-
-	rxp := `/([0-9]+)`
-	pattern := regexp.MustCompile(rxp)
-	matches := pattern.FindAllStringSubmatch(path, -1)
-
-	if len(matches) != 1 {
-		http.Error(rw, "Invalid URI for PUT method", http.StatusBadRequest)
-		return
-	}
-
-	if len(matches[0]) != 2 {
-		http.Error(rw, "Invalid URI for PUT method", http.StatusBadRequest)
-		return
-	}
-
-	match := matches[0][1]
-	id, err := strconv.Atoi(match)
 	if err != nil {
 		http.Error(rw, "Could not convert path to int", http.StatusBadRequest)
 	}
 
-	p.l.Println(path, id)
-    err = p.updateProduct(id, rw, r)
-    if err == data.ProductNotFound {
-        http.Error(rw, "Product not found", http.StatusBadRequest)
-        return
-    }
-    if err != nil {
-        http.Error(rw, "Could not return", http.StatusInternalServerError)
+	p.updateProduct(idint, rw, r)
 
-    }
 	return
 }
 
-func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handling GET product")
 	productList := data.GetProducts()
 
@@ -86,7 +44,7 @@ func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handling POST product")
 
 	product := &data.Product{}
