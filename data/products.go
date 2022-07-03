@@ -35,20 +35,30 @@ func AddProduct(p *Product) {
 }
 
 func UpdateProduct(id int, p *Product) error {
-	var i int
-	for i = 0; i < len(productList); i++ {
-		if productList[i].ID == id {
-			p.ID = id
-			productList[i] = p
-			return nil
-		}
-	}
-	return ProductError{Message: "Product with ID not found"}
+    idx, err := findProduct(id)
+    if err != nil {
+        return err
+    }
+
+    p.ID = id
+    productList[idx] = p
+    return nil
+
+}
+
+func findProduct(id int) (int, error) {
+    for i, product := range(productList) {
+		if product.ID == id {
+            return i, nil
+        }
+    }
+    return -1, ProductNotFound
 }
 
 type ProductError struct {
 	Message string
 }
+var ProductNotFound = ProductError{Message: "Product with ID not found"}
 
 func (pe ProductError) Error() string {
 	return fmt.Sprintf(pe.Message)
